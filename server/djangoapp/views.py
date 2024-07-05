@@ -96,26 +96,12 @@ def get_dealerships(request, state="All"):
 
 
 def get_dealer_details(request, dealer_id):
-    if dealer_id:
-        endpoint = "/fetchDealer/" + str(dealer_id)
-        print(f"Fetching dealer details for dealer_id: {dealer_id}")
+    if(dealer_id):
+        endpoint = "/fetchDealer/"+str(dealer_id)
         dealership = get_request(endpoint)
-        print(f"Response from backend API: {dealership}")
-        if dealership:
-            dealer_details = {
-                'full_name': dealership.get('full_name', 'N/A'),
-                'city': dealership.get('city', 'N/A'),
-                'address': dealership.get('address', 'N/A'),
-                'zip': dealership.get('zip', 'N/A'),
-                'state': dealership.get('state', 'N/A'),
-            }
-            print(f"Dealer details being returned: {dealer_details}")
-            return JsonResponse({"status": 200, "dealer": [dealer_details]})
-        else:
-            return JsonResponse({"status": 404, "message": "Dealer not found"})
+        return JsonResponse({"status":200,"dealer":dealership})
     else:
-        return JsonResponse({"status": 400, "message": "Bad Request"})
-
+        return JsonResponse({"status":400,"message":"Bad Request"})
 
 # Create a `get_dealer_details` view to render the dealer details
 def get_dealer_reviews(request, dealer_id):
@@ -123,6 +109,7 @@ def get_dealer_reviews(request, dealer_id):
         endpoint = "/fetchReviews/dealer/" + str(dealer_id)
         reviews = get_request(endpoint)
         for review_detail in reviews:
+            print("testvalue----" + review_detail['review'])
             response = analyze_review_sentiments(review_detail['review'])
             print(response)
             review_detail['sentiment'] = response['sentiment']
